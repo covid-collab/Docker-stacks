@@ -1,0 +1,15 @@
+name=radar-s3-sink-connector
+connector.class=io.confluent.connect.s3.S3SinkConnector
+tasks.max=1
+topics=test,test1,test2
+flush.size=10
+
+s3.bucket.name=covid-collab-data-export-avro
+s3.region=eu-west-2
+
+#aws.access.key.id=accesskey # this did not work with minio config, although adding environment variables to docker-container works
+#aws.secret.access.key=secretkey
+
+#store.url=http://localhost:9000/
+storage.class=io.confluent.connect.s3.storage.S3Storage
+format.class=org.radarbase.connect.s3.RadarBaseAvroFormat

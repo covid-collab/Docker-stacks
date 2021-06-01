@@ -1,0 +1,14 @@
+{
+"connector.class": "org.radarbase.connect.rest.fitbit.FitbitSourceConnector",
+"tasks.max": 1,
+"rest.source.base.url": "https://api.fitbit.com",
+"rest.source.poll.interval.ms": 5000,
+"rest.source.request.generator.class": "org.radarbase.connect.rest.fitbit.request.FitbitRequestGenerator",
+"fitbit.api.client": "",
+"fitbit.api.secret": "",
+"fitbit.max.users.per.poll": 10,
+"fitbit.user.repository.class": "org.radarbase.connect.rest.fitbit.user.firebase.CovidCollabFirebaseUserRepository",
+"fitbit.user.repository.url": "http://localhost:8080/",
+"fitbit.api.intraday": "true",
+"fitbit.user.firebase.collection.fitbit.name": "fitbit-test"
+}

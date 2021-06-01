@@ -1,0 +1,4 @@
+# Created by .ignore support plugin (hsz.mobi)
+etc/s3-connect/sink-s3.properties
+
+.env
