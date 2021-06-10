@@ -15,11 +15,13 @@ services:
     image: covidcollab/radar-push-endpoint:dev
     depends_on:
       - redis
+      - schema-registry-1
     ports:
       - 8090:8090
     volumes:
       - ./etc/push-endpoint/gateway.yml:/etc/radar-gateway/gateway.yml
       - ${GOOGLE_CREDENTIALS_FILE_PATH}:/opt/google_credentials.json
+      - "${KAFKA_SSL_TRUSTSTORE_LOCATION}:/kafka-truststore"
     environment:
       GOOGLE_APPLICATION_CREDENTIALS: /opt/google_credentials.json
 
@@ -32,6 +34,27 @@ services:
     restart: always
     volumes:
       - "${REDIS_DATA_PATH}:/bitnami/redis/data"
+
+  #---------------------------------------------------------------------------#
+  # Schema Registry                                                           #
+  #---------------------------------------------------------------------------#
+  schema-registry-1:
+    image: confluentinc/cp-schema-registry:6.1.0
+    restart: always
+    ports:
+      - "8081:8081"
+    volumes:
+      - "${KAFKA_SSL_TRUSTSTORE_LOCATION}:/kafka-truststore"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: ${ZOOKEEPER}
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_AVRO_COMPATIBILITY_LEVEL: none
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_LOCATION: "/kafka-truststore"
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SSL
+      KAFKA_GROUP_MIN_SESSION_TIMEOUT_MS: 5000
+
 
   #---------------------------------------------------------------------------#
   # Webserver                                                                 #
