@@ -11,7 +11,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:5.1.0
+    image: confluentinc/cp-kafka:6.1.0
     networks:
       - kafka
     depends_on:
@@ -34,7 +34,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:5.1.0
+    image: confluentinc/cp-zookeeper:6.1.0
     networks:
       - kafka
     environment:

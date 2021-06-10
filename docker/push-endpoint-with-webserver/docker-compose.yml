@@ -1,0 +1,55 @@
+---
+version: "2.2"
+
+volumes:
+  certs:
+    external: true
+  certs-data:
+    external: true
+
+services:
+  #---------------------------------------------------------------------------#
+  # Push API Gateway                                                        #
+  #---------------------------------------------------------------------------#
+  radar-push-endpoint:
+    image: covidcollab/radar-push-endpoint:dev
+    depends_on:
+      - redis
+    ports:
+      - 8090:8090
+    volumes:
+      - ./etc/push-endpoint/gateway.yml:/etc/radar-gateway/gateway.yml
+      - ${GOOGLE_CREDENTIALS_FILE_PATH}:/opt/google_credentials.json
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /opt/google_credentials.json
+
+  redis:
+    image: bitnami/redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    restart: always
+    volumes:
+      - "${REDIS_DATA_PATH}:/bitnami/redis/data"
+
+  #---------------------------------------------------------------------------#
+  # Webserver                                                                 #
+  #---------------------------------------------------------------------------#
+  webserver:
+    image: nginx:1.14.0-alpine
+    restart: always
+    depends_on:
+      - radar-push-endpoint
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/letsencrypt
+      - certs-data:/data/letsencrypt
+      - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
+      - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
+    # healthcheck hard to do, however, it is possible to monitor this externally
+    # with
+    # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
