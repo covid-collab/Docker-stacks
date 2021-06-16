@@ -19,7 +19,7 @@ kafka:
     producer:
         bootstrap.servers: localhost:9093
         security.protocol: SSL
-        ssl.keystore.location: /kafka-truststore
+        ssl.truststore.location: /kafka-truststore
     # Kafka Admin Client settings. Read from https://kafka.apache.org/documentation/#adminclientconfigs.
     #admin:
         # bootstrap server property is copied from the producer settings if none is provided.
